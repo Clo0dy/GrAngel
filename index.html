@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Приглашение на фильм</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: white;
+            color: #000;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        img {
+            width: 300px;
+            height: 200px;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #fcaec4;
+            font-size: 2rem;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #fcaec4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            width: 100px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            background-color: #fcaec4;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <img id="slideshow" src="img.jpg">
+        <h1>Приглашаю тебя на просмотр фильма</h1>
+        <button id="noButton" onclick="handleResponse('Нет')">Нет</button>
+        <button id="yesButton" onclick="handleResponse('Да')">Да</button>
+        <p><strong>Когда:</strong> 04.12.24</p>
+    </div>
+
+    <script>
+        const images = ["img.jpg", "img2.jpg", "img3.jpg"]; 
+        let currentIndex = 0;
+
+        setInterval(() => {
+            const imgElement = document.getElementById("slideshow");
+            currentIndex = (currentIndex + 1) % images.length; 
+            imgElement.src = images[currentIndex]; 
+        }, 3000); 
+        function handleResponse(response) {
+            const h1Element = document.querySelector("h1");
+            const noButton = document.getElementById("noButton");
+            const yesButton = document.getElementById("yesButton");
+
+            if (response === 'Нет') {
+                h1Element.textContent = 'Точно?';
+            } else if (response === 'Да') {
+                launchConfetti()
+                h1Element.textContent = 'Отлично, жду тя)))';
+                noButton.style.display = 'none';
+                yesButton.style.display = 'none';
+            }
+
+            sendResponse(response);
+        }
+
+        async function sendResponse(response) {
+            const chatId = '6725120217'; 
+            const botToken = '7916191644:AAGSoKY6So64teNYQ22JdATN9EcuoHwE6B8'; 
+            const message = `Ответ: ${response}\nДата: 04.12.24`;
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+            try {
+                // Отправка запроса
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: message
+                    })
+                });
+
+                const data = await response.json();  // Преобразуем ответ в JSON
+
+                if (data.ok) {
+                } else {
+                    throw new Error(`Ошибка при отправке: ${data.description}`);
+                }
+
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
+        function launchConfetti() {
+            confetti({
+                'particleCount': 0xfa,
+                'spread': 0x46,
+                'origin': {
+                    'y': 0.6
+                }
+            });
+        }
+        let currentValue = 0xc8;
+        const counterElement = document.getElementById("counter");
+        let isAnimating = true;
+        function increaseCounter() {
+            if (isAnimating && currentValue < 0x186a0) {
+                currentValue += Math.floor(Math.random() * 0x3e8) + 0x1f4;
+                if (currentValue > 0x186a0) {
+                    currentValue = 0x186a0;
+                }
+                counterElement.textContent = currentValue.toLocaleString();
+                setTimeout(increaseCounter, 0x32);
+            }
+        }
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</body>
+
+</html>
